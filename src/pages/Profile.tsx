@@ -23,10 +23,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row mx-5 mt-6 p-8 rounded-xl bg-gradient-to-r from-indigo-500/50 to-blue-400/60">
-        <UserProfile user={userForDisplay} />
-        <UserInfo user={userForDisplay} />
+    <div className="flex mt-5 mx-8 flex-grow">
+      <div className="w-full flex rounded shadow p-1 container bg-gradient-to-r from-blue-400 to-indigo-400">
+        <div className="w-full h-full bg-white rounded container flex flex-row p-8 shadow">
+          <UserProfile user={userForDisplay} />
+          <UserInfo user={userForDisplay} />
+        </div>
       </div>
     </div>
   );

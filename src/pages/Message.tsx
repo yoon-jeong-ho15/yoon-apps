@@ -22,24 +22,24 @@ export default function MessagePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full max-w-4xl mx-auto p-4">
-          <div className="h-full bg-white rounded-lg shadow-lg flex flex-col">
-            <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-4 rounded-t-lg">
-              <h1 className="text-2xl font-bold">Messages</h1>
-              <p className="text-sm opacity-90">Send and receive messages</p>
-            </div>
-            <MessageList
-              ref={messageListRef}
-              currentUserId={user.id}
-              currentUsername={user.username}
-            />
-            <MessageForm
-              currentUserId={user.id}
-              onMessageSent={handleMessageSent}
-            />
-          </div>
+    <div className="flex mt-5 mx-8 flex-grow">
+      <div
+        className="w-full flex rounded shadow p-1 container
+          bg-gradient-to-r from-blue-400 to-indigo-400"
+      >
+        <div
+          className="w-full h-full bg-white rounded container
+            flex flex-col justify-between shadow"
+        >
+          <MessageList
+            ref={messageListRef}
+            currentUserId={user.id}
+            currentUsername={user.username}
+          />
+          <MessageForm
+            currentUserId={user.id}
+            onMessageSent={handleMessageSent}
+          />
         </div>
       </div>
     </div>

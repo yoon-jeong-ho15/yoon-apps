@@ -1,10 +1,11 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { motion } from "motion/react";
+import { UserCircleIcon, ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
 
 const tabs = [
-  { title: "프로필", href: "/profile" },
-  { title: "메시지", href: "/message" },
+  { title: "프로필", href: "/profile", icon: UserCircleIcon },
+  { title: "메시지", href: "/message", icon: ChatBubbleLeftRightIcon },
 ];
 
 export default function Navigation() {
@@ -36,20 +37,24 @@ export default function Navigation() {
           shadow-lg font-mono"
       >
         <div className="flex flex-grow h-full items-center justify-around text-2xl">
-          {tabs.map((item) => (
-            <motion.button
-              key={item.title}
-              onClick={() => navigate(item.href)}
-              animate={{
-                backgroundColor: item === selectedTab ? "#000" : "transparent",
-                color: item === selectedTab ? "#fff" : "#000",
-              }}
-              transition={{ duration: 0.3 }}
-              className="relative rounded px-2 py-1 cursor-pointer border-none outline-none"
-            >
-              <span className="z-10 bg-inherit">{item.title}</span>
-            </motion.button>
-          ))}
+          {tabs.map((item) => {
+            const Icon = item.icon;
+            return (
+              <motion.button
+                key={item.title}
+                onClick={() => navigate(item.href)}
+                animate={{
+                  backgroundColor: item === selectedTab ? "#000" : "transparent",
+                  color: item === selectedTab ? "#fff" : "#000",
+                }}
+                transition={{ duration: 0.3 }}
+                className="relative rounded px-3 py-1 cursor-pointer border-none outline-none flex items-center gap-2"
+              >
+                <Icon className="w-6 h-6" />
+                <span className="z-10 bg-inherit text-lg">{item.title}</span>
+              </motion.button>
+            );
+          })}
         </div>
         <div className="flex flex-row h-full w-fit border-l border-gray-500 bg-gray-100 items-center px-2 z-10 rounded-r-2xl gap-2">
           <span className="text-sm text-gray-600">{user.username}</span>
