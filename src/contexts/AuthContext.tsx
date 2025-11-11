@@ -8,6 +8,7 @@ interface AuthContextType {
   user: AuthUser | null;
   supabaseUser: SupabaseUser | null;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   signup: (email: string, password: string, username: string, metadata?: Record<string, string>) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -25,8 +26,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseUser(session?.user ?? null);
       if (session?.user) {
-        // Fetch user profile from database
-        fetchUserProfile(session.user.id);
+        // Fetch user profile from database or create if it doesn't exist (OAuth)
+        fetchOrCreateUserProfile(session.user);
       } else {
         setIsLoading(false);
       }
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSupabaseUser(session?.user ?? null);
       if (session?.user) {
-        fetchUserProfile(session.user.id);
+        fetchOrCreateUserProfile(session.user);
       } else {
         setUser(null);
         setIsLoading(false);
@@ -63,6 +64,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOrCreateUserProfile = async (supabaseUser: SupabaseUser) => {
+    try {
+      // Try to fetch existing profile
+      const { data, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("id", supabaseUser.id)
+        .single();
+
+      if (data) {
+        setUser(data as AuthUser);
+      } else if (error) {
+        // If profile doesn't exist, create one for OAuth users
+        const username = supabaseUser.user_metadata?.full_name ||
+                        supabaseUser.user_metadata?.name ||
+                        supabaseUser.email?.split("@")[0] ||
+                        "User";
+
+        const { data: newProfile, error: insertError } = await supabase
+          .from("user")
+          .insert({
+            id: supabaseUser.id,
+            username,
+            from: "0",
+            profile_pic: supabaseUser.user_metadata?.avatar_url || "",
+            friend_group: "0",
+            password: "", // OAuth users don't have password
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("Error creating user profile:", insertError);
+        } else if (newProfile) {
+          setUser(newProfile as AuthUser);
+        }
+      }
+    } catch (error) {
+      console.error("Error in fetchOrCreateUserProfile:", error);
     } finally {
       setIsLoading(false);
     }
@@ -95,6 +140,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Login error:", error);
       return { success: false, error: "로그인 중 오류가 발생했습니다." };
+    }
+  };
+
+  const loginWithGoogle = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/profile`,
+        },
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      // OAuth will redirect, so we return success
+      return { success: true };
+    } catch (error) {
+      console.error("Google login error:", error);
+      return { success: false, error: "Google 로그인 중 오류가 발생했습니다." };
     }
   };
 
@@ -161,7 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, supabaseUser, login, signup, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, supabaseUser, login, loginWithGoogle, signup, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

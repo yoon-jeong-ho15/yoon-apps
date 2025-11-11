@@ -7,7 +7,7 @@ A real-time chat and profile application built with Vite + React + TypeScript.
 - 👤 **User Profile**: View user information and profile
 - 💬 **Real-time Chat**: 1-on-1 and group chat with real-time messaging
 - 🔔 **Notifications**: Unread message counts and notifications
-- 🔒 **Authentication**: Secure authentication with Supabase Auth (email/password sign-in and sign-up)
+- 🔒 **Authentication**: Secure authentication with Supabase Auth (email/password and Google OAuth)
 
 ## Tech Stack
 
@@ -55,9 +55,19 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    - Navigate to **Authentication** > **Providers**
    - Enable **Email** provider
    - Configure email settings (optional: set up email templates)
+   - **Enable Google OAuth** (optional but recommended):
+     1. Go to **Authentication** > **Providers** > **Google**
+     2. Enable the Google provider
+     3. Create OAuth credentials in [Google Cloud Console](https://console.cloud.google.com/):
+        - Go to **APIs & Services** > **Credentials**
+        - Create OAuth 2.0 Client ID
+        - Add authorized redirect URIs: `https://<your-project-ref>.supabase.co/auth/v1/callback`
+     4. Copy the Client ID and Client Secret to Supabase
+     5. Save the configuration
    - **Important**: Make sure the `user` table schema matches the auth requirements
      - The `id` field should be a UUID and should match the Supabase Auth user ID
      - Required fields: `id`, `username`, `from`, `profile_pic`, `friend_group`
+     - The `password` field can be empty for OAuth users
 
 5. Run the development server:
 ```bash
