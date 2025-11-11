@@ -15,48 +15,6 @@ export type User = {
   friendGroup: string;
 };
 
-export type ChatroomUser = {
-  username: string;
-  id: string;
-  profilePic: string;
-};
-
-export type Chatroom = {
-  id: string;
-  title: string;
-  users: ChatroomUser[];
-};
-
-export type ChatroomMap = Map<string, Chatroom>;
-
-export type ChatMessage = {
-  id: string;
-  created_at: string;
-  username: string;
-  user_id: string;
-  message: string;
-  chatroom: string;
-  profile_pic: string;
-  recipients_count: number;
-  unread_count: number;
-};
-
-export type MessageDataForNotification = {
-  message_id: number;
-  chatroom_title: string;
-  sender_username: string;
-  message_preview: string;
-};
-
-export type Notification = {
-  id: number;
-  user_id: string;
-  type: string;
-  created_at: string;
-  data: MessageDataForNotification;
-  read_at?: string;
-};
-
 // Simple Message type for new message system
 // Maps to v_message view which includes username fields from joins
 export type Message = {

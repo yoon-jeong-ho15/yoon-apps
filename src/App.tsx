@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
-import ChatPage from "./pages/Chat";
 import MessagePage from "./pages/Message";
 import Navigation from "./components/common/Navigation";
 
@@ -36,14 +35,6 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <ChatPage />
               </ProtectedRoute>
             }
           />
