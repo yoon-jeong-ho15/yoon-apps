@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import ChatPage from "./pages/Chat";
+import MessagePage from "./pages/Message";
 import Navigation from "./components/common/Navigation";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -43,6 +44,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/message"
+            element={
+              <ProtectedRoute>
+                <MessagePage />
               </ProtectedRoute>
             }
           />

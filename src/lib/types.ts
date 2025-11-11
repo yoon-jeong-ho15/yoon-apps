@@ -56,3 +56,14 @@ export type Notification = {
   data: MessageDataForNotification;
   read_at?: string;
 };
+
+// Simple Message type for new message system
+export type Message = {
+  id: string;
+  author_id: string;
+  message: string;
+  created_at: string;
+  // Joined data from user table
+  username?: string;
+  profile_pic?: string;
+};
