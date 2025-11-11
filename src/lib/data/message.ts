@@ -26,18 +26,20 @@ export function isOwner(userId: string): boolean {
  */
 export async function fetchAllMessages(): Promise<Message[]> {
   const { data, error } = await supabase
-    .from("message")
-    .select(`
+    .from("v_message")
+    .select(
+      `
       id,
       author_id,
+      author_username,
+      author_profile_pic,
       recipient_id,
+      recipient_username,
+      recipient_profile_pic,
       message,
-      created_at,
-      user:author_id (
-        username,
-        profile_pic
-      )
-    `)
+      created_at
+    `
+    )
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -45,15 +47,21 @@ export async function fetchAllMessages(): Promise<Message[]> {
     return [];
   }
 
-  // Flatten the joined user data
+  // Return data from v_message view, transforming to nested structure
   return (data || []).map((msg: any) => ({
     id: msg.id,
-    author_id: msg.author_id,
-    recipient_id: msg.recipient_id,
+    author: {
+      id: msg.author_id,
+      username: msg.author_username,
+      profile_pic: msg.author_profile_pic,
+    },
+    recipient: {
+      id: msg.recipient_id,
+      username: msg.recipient_username,
+      profile_pic: msg.recipient_profile_pic,
+    },
     message: msg.message,
     created_at: msg.created_at,
-    username: msg.user?.username,
-    profile_pic: msg.user?.profile_pic,
   }));
 }
 
@@ -61,26 +69,32 @@ export async function fetchAllMessages(): Promise<Message[]> {
  * Fetch messages for a specific user conversation
  * Returns messages between the user and the owner
  */
-export async function fetchMessagesByUserId(userId: string): Promise<Message[]> {
+export async function fetchMessagesByUserId(
+  userId: string
+): Promise<Message[]> {
   const ownerId = getOwnerId();
 
   // Get messages where:
   // - User sent to owner (author=user, recipient=owner)
   // - Owner sent to user (author=owner, recipient=user)
   const { data, error } = await supabase
-    .from("message")
-    .select(`
+    .from("v_message")
+    .select(
+      `
       id,
       author_id,
+      author_username,
+      author_profile_pic,
       recipient_id,
+      recipient_username,
+      recipient_profile_pic,
       message,
-      created_at,
-      user:author_id (
-        username,
-        profile_pic
-      )
-    `)
-    .or(`and(author_id.eq.${userId},recipient_id.eq.${ownerId}),and(author_id.eq.${ownerId},recipient_id.eq.${userId})`)
+      created_at
+    `
+    )
+    .or(
+      `and(author_id.eq.${userId},recipient_id.eq.${ownerId}),and(author_id.eq.${ownerId},recipient_id.eq.${userId})`
+    )
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -88,15 +102,21 @@ export async function fetchMessagesByUserId(userId: string): Promise<Message[]> 
     return [];
   }
 
-  // Flatten the joined user data
+  // Return data from v_message view, transforming to nested structure
   return (data || []).map((msg: any) => ({
     id: msg.id,
-    author_id: msg.author_id,
-    recipient_id: msg.recipient_id,
+    author: {
+      id: msg.author_id,
+      username: msg.author_username,
+      profile_pic: msg.author_profile_pic,
+    },
+    recipient: {
+      id: msg.recipient_id,
+      username: msg.recipient_username,
+      profile_pic: msg.recipient_profile_pic,
+    },
     message: msg.message,
     created_at: msg.created_at,
-    username: msg.user?.username,
-    profile_pic: msg.user?.profile_pic,
   }));
 }
 
@@ -153,15 +173,17 @@ export async function insertMessage(
  * Get messages grouped by user (for owner view)
  * Returns a map of user_id -> messages
  */
-export async function fetchMessagesGroupedByUser(): Promise<Map<string, Message[]>> {
+export async function fetchMessagesGroupedByUser(): Promise<
+  Map<string, Message[]>
+> {
   const messages = await fetchAllMessages();
   const grouped = new Map<string, Message[]>();
 
   messages.forEach((msg) => {
-    if (!grouped.has(msg.author_id)) {
-      grouped.set(msg.author_id, []);
+    if (!grouped.has(msg.author.id)) {
+      grouped.set(msg.author.id, []);
     }
-    grouped.get(msg.author_id)!.push(msg);
+    grouped.get(msg.author.id)!.push(msg);
   });
 
   return grouped;

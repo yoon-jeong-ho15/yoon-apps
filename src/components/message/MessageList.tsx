@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import type { Message } from "../../lib/types";
-import { fetchMessagesByUserId, fetchAllMessages, isOwner } from "../../lib/data/message";
+import {
+  fetchMessagesByUserId,
+  fetchAllMessages,
+  isOwner,
+} from "../../lib/data/message";
 import { NoProfile } from "../common/Icon";
 
 interface MessageListProps {
@@ -8,7 +12,10 @@ interface MessageListProps {
   currentUsername: string;
 }
 
-export default function MessageList({ currentUserId, currentUsername }: MessageListProps) {
+export default function MessageList({
+  currentUserId,
+  currentUsername,
+}: MessageListProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const messageDivRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,7 +66,7 @@ export default function MessageList({ currentUserId, currentUsername }: MessageL
           <MessageItem
             key={msg.id}
             message={msg}
-            isMe={msg.author_id === currentUserId}
+            isMe={msg.author.id === currentUserId}
             currentUsername={currentUsername}
           />
         ))
@@ -85,10 +92,10 @@ function MessageItem({ message, isMe }: MessageItemProps) {
         }`}
       >
         <div className="flex items-center mb-2">
-          {message.profile_pic ? (
+          {message.author.profile_pic ? (
             <img
-              src={message.profile_pic}
-              alt={message.username}
+              src={message.author.profile_pic}
+              alt={message.author.username}
               className="w-8 h-8 rounded-full mr-2"
             />
           ) : (
@@ -97,13 +104,15 @@ function MessageItem({ message, isMe }: MessageItemProps) {
             </div>
           )}
           <span className="font-semibold text-sm">
-            {message.username || "Unknown User"}
+            {message.author.username || "Unknown User"}
           </span>
         </div>
         <p className="text-gray-800 whitespace-pre-wrap break-words">
           {message.message}
         </p>
-        <span className="text-xs text-gray-500 mt-1 block">{formattedDate}</span>
+        <span className="text-xs text-gray-500 mt-1 block">
+          {formattedDate}
+        </span>
       </div>
     </div>
   );

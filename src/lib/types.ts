@@ -58,13 +58,19 @@ export type Notification = {
 };
 
 // Simple Message type for new message system
+// Maps to v_message view which includes username fields from joins
 export type Message = {
   id: string;
-  author_id: string;
-  recipient_id: string;
+  author: {
+    id: string;
+    username: string;
+    profile_pic: string;
+  };
+  recipient: {
+    id: string;
+    username: string;
+    profile_pic: string;
+  };
   message: string;
   created_at: string;
-  // Joined data from user table
-  username?: string;
-  profile_pic?: string;
 };
