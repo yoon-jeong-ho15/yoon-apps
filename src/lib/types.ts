@@ -61,6 +61,7 @@ export type Notification = {
 export type Message = {
   id: string;
   author_id: string;
+  recipient_id: string;
   message: string;
   created_at: string;
   // Joined data from user table

@@ -3,10 +3,15 @@ import { insertMessage } from "../../lib/data/message";
 
 interface MessageFormProps {
   currentUserId: string;
+  recipientId?: string; // Optional - will be auto-determined for regular users
   onMessageSent?: () => void;
 }
 
-export default function MessageForm({ currentUserId, onMessageSent }: MessageFormProps) {
+export default function MessageForm({
+  currentUserId,
+  recipientId,
+  onMessageSent
+}: MessageFormProps) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,7 +25,11 @@ export default function MessageForm({ currentUserId, onMessageSent }: MessageFor
     setIsSubmitting(true);
 
     try {
-      const messageId = await insertMessage(currentUserId, message.trim());
+      const messageId = await insertMessage(
+        currentUserId,
+        message.trim(),
+        recipientId  // Pass recipient if provided (for owner sending to specific user)
+      );
 
       if (messageId) {
         setMessage("");

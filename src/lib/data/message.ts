@@ -30,6 +30,7 @@ export async function fetchAllMessages(): Promise<Message[]> {
     .select(`
       id,
       author_id,
+      recipient_id,
       message,
       created_at,
       user:author_id (
@@ -48,6 +49,7 @@ export async function fetchAllMessages(): Promise<Message[]> {
   return (data || []).map((msg: any) => ({
     id: msg.id,
     author_id: msg.author_id,
+    recipient_id: msg.recipient_id,
     message: msg.message,
     created_at: msg.created_at,
     username: msg.user?.username,
@@ -62,11 +64,15 @@ export async function fetchAllMessages(): Promise<Message[]> {
 export async function fetchMessagesByUserId(userId: string): Promise<Message[]> {
   const ownerId = getOwnerId();
 
+  // Get messages where:
+  // - User sent to owner (author=user, recipient=owner)
+  // - Owner sent to user (author=owner, recipient=user)
   const { data, error } = await supabase
     .from("message")
     .select(`
       id,
       author_id,
+      recipient_id,
       message,
       created_at,
       user:author_id (
@@ -74,7 +80,7 @@ export async function fetchMessagesByUserId(userId: string): Promise<Message[]> 
         profile_pic
       )
     `)
-    .or(`author_id.eq.${userId},author_id.eq.${ownerId}`)
+    .or(`and(author_id.eq.${userId},recipient_id.eq.${ownerId}),and(author_id.eq.${ownerId},recipient_id.eq.${userId})`)
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -86,6 +92,7 @@ export async function fetchMessagesByUserId(userId: string): Promise<Message[]> 
   return (data || []).map((msg: any) => ({
     id: msg.id,
     author_id: msg.author_id,
+    recipient_id: msg.recipient_id,
     message: msg.message,
     created_at: msg.created_at,
     username: msg.user?.username,
@@ -95,12 +102,40 @@ export async function fetchMessagesByUserId(userId: string): Promise<Message[]> 
 
 /**
  * Insert a new message
+ * @param authorId - The user sending the message
+ * @param message - The message content
+ * @param recipientId - Optional recipient ID. If not provided:
+ *                      - Regular users always send to owner
+ *                      - Owner must specify recipient
  */
-export async function insertMessage(authorId: string, message: string): Promise<string | null> {
+export async function insertMessage(
+  authorId: string,
+  message: string,
+  recipientId?: string
+): Promise<string | null> {
+  const ownerId = getOwnerId();
+
+  // Determine recipient:
+  // - If author is owner, recipient must be provided
+  // - If author is regular user, recipient is always owner
+  let finalRecipientId: string;
+
+  if (isOwner(authorId)) {
+    if (!recipientId) {
+      console.error("Owner must specify recipient when sending message");
+      return null;
+    }
+    finalRecipientId = recipientId;
+  } else {
+    // Regular user always sends to owner
+    finalRecipientId = ownerId;
+  }
+
   const { data, error } = await supabase
     .from("message")
     .insert({
       author_id: authorId,
+      recipient_id: finalRecipientId,
       message: message,
     })
     .select("id")
