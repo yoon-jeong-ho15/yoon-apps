@@ -7,9 +7,17 @@ import { supabase } from "../lib/supabase";
 interface AuthContextType {
   user: AuthUser | null;
   supabaseUser: SupabaseUser | null;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
-  signup: (email: string, password: string, username: string, metadata?: Record<string, string>) => Promise<{ success: boolean; error?: string }>;
+  signup: (
+    email: string,
+    password: string,
+    username: string,
+    metadata?: Record<string, string>
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
@@ -82,20 +90,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data as AuthUser);
       } else if (error) {
         // If profile doesn't exist, create one for OAuth users
-        const username = supabaseUser.user_metadata?.full_name ||
-                        supabaseUser.user_metadata?.name ||
-                        supabaseUser.email?.split("@")[0] ||
-                        "User";
+        const username =
+          supabaseUser.user_metadata?.full_name ||
+          supabaseUser.user_metadata?.name ||
+          supabaseUser.email?.split("@")[0] ||
+          "User";
 
         const { data: newProfile, error: insertError } = await supabase
           .from("user")
           .insert({
             id: supabaseUser.id,
             username,
-            from: "0",
             profile_pic: supabaseUser.user_metadata?.avatar_url || "",
-            friend_group: "0",
-            password: "", // OAuth users don't have password
           })
           .select()
           .single();
@@ -126,7 +132,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-          return { success: false, error: "이메일 또는 비밀번호가 올바르지 않습니다." };
+          return {
+            success: false,
+            error: "이메일 또는 비밀번호가 올바르지 않습니다.",
+          };
         }
         return { success: false, error: error.message };
       }
@@ -227,7 +236,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, supabaseUser, login, loginWithGoogle, signup, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        supabaseUser,
+        login,
+        loginWithGoogle,
+        signup,
+        logout,
+        isLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
