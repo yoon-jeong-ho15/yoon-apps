@@ -1,12 +1,15 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { motion } from "motion/react";
-import { UserCircleIcon, ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon, ChatBubbleLeftRightIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { isOwner } from "../../lib/data/message";
 
-const tabs = [
+const baseTabs = [
   { title: "프로필", href: "/profile", icon: UserCircleIcon },
   { title: "메시지", href: "/message", icon: ChatBubbleLeftRightIcon },
 ];
+
+const ownerTab = { title: "관리자", href: "/owner", icon: ShieldCheckIcon };
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -21,6 +24,8 @@ export default function Navigation() {
     await logout();
   };
 
+  // Add owner tab if user is owner
+  const tabs = isOwner(user.id) ? [...baseTabs, ownerTab] : baseTabs;
   const selectedTab = tabs.find((tab) => tab.href === location.pathname);
 
   return (
