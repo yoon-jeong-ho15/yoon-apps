@@ -34,7 +34,10 @@ export default function Navigation() {
     fetchUnreadCount();
 
     // Poll for updates
-    const interval = setInterval(fetchUnreadCount, NOTIFICATION_POLLING_INTERVAL);
+    const interval = setInterval(
+      fetchUnreadCount,
+      NOTIFICATION_POLLING_INTERVAL
+    );
 
     return () => clearInterval(interval);
   }, [user?.id]);
@@ -70,7 +73,8 @@ export default function Navigation() {
                 key={item.title}
                 onClick={() => navigate(item.href)}
                 animate={{
-                  backgroundColor: item === selectedTab ? "#000" : "transparent",
+                  backgroundColor:
+                    item === selectedTab ? "#000" : "transparent",
                   color: item === selectedTab ? "#fff" : "#000",
                 }}
                 transition={{ duration: 0.3 }}

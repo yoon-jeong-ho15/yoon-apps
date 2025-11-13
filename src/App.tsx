@@ -32,7 +32,14 @@ function AppRoutes() {
       <div className="flex flex-col flex-grow">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/profile"
             element={
