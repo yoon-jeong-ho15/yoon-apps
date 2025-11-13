@@ -1,62 +1,13 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import MessageList, { type MessageListRef } from "../components/message/MessageList";
-import MessageForm from "../components/message/MessageForm";
 import { isOwner, fetchMessagesByUserId } from "../lib/data/message";
 import { fetchUsersByGroup } from "../lib/data/user";
 import { FRIEND_GROUP } from "../lib/constants";
 import type { Message, User } from "../lib/types";
+import { Navigate } from "react-router-dom";
 
-export default function MessagePage() {
+export default function OwnerDashboard() {
   const { user } = useAuth();
-  const messageListRef = useRef<MessageListRef>(null);
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Please log in to view messages.</div>
-      </div>
-    );
-  }
-
-  // Check if user is owner
-  if (isOwner(user.id)) {
-    return <OwnerMessageView user={user} />;
-  }
-
-  // Refresh messages after sending
-  const handleMessageSent = () => {
-    // Trigger a reload of messages without full page reload
-    messageListRef.current?.loadMessages();
-  };
-
-  return (
-    <div className="flex mt-5 mx-8 flex-grow">
-      <div
-        className="w-full flex rounded shadow p-1 container
-          bg-gradient-to-r from-blue-400 to-indigo-400"
-      >
-        <div
-          className="w-full h-full bg-white rounded container
-            flex flex-col justify-between shadow"
-        >
-          <MessageList
-            ref={messageListRef}
-            currentUserId={user.id}
-            currentUsername={user.username}
-          />
-          <MessageForm
-            currentUserId={user.id}
-            onMessageSent={handleMessageSent}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Owner view component
-function OwnerMessageView({ user }: { user: { id: string; username: string } }) {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -65,13 +16,18 @@ function OwnerMessageView({ user }: { user: { id: string; username: string } }) 
   );
   const [isLoading, setIsLoading] = useState(true);
 
+  // Check if current user is owner
+  if (!user || !isOwner(user.id)) {
+    return <Navigate to="/" replace />;
+  }
+
   useEffect(() => {
     loadUsers();
   }, []);
 
   const loadUsers = async () => {
     setIsLoading(true);
-    const allUsers = await fetchUsersByGroup(FRIEND_GROUP.ALL, user.username);
+    const allUsers = await fetchUsersByGroup(FRIEND_GROUP.ALL, user!.username);
     setUsers(allUsers);
 
     // Load message count for each user
