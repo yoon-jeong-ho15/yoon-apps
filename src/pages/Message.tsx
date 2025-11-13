@@ -86,19 +86,23 @@ function OwnerMessageView({ user }: { user: { id: string; username: string } }) 
 
   const handleUserClick = async (selectedUser: User) => {
     setSelectedUser(selectedUser);
-    const userMessages = await fetchMessagesByUserId(selectedUser.id);
+    await loadMessagesForUser(selectedUser.id);
+  };
+
+  const loadMessagesForUser = async (userId: string) => {
+    const userMessages = await fetchMessagesByUserId(userId);
     setMessages(userMessages);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const handleMessageSent = async () => {
+    if (selectedUser) {
+      // Reload messages for the selected user
+      await loadMessagesForUser(selectedUser.id);
+      // Update message count
+      const counts = new Map(messageCount);
+      counts.set(selectedUser.id, messages.length + 1);
+      setMessageCount(counts);
+    }
   };
 
   if (isLoading) {
@@ -111,11 +115,11 @@ function OwnerMessageView({ user }: { user: { id: string; username: string } }) 
 
   return (
     <div className="flex mt-5 mx-8 flex-grow">
-      <div className="w-full flex rounded shadow p-1 bg-gradient-to-r from-purple-400 to-pink-400">
+      <div className="w-full flex rounded shadow p-1 bg-gradient-to-r from-blue-400 to-indigo-400">
         <div className="w-full h-full bg-white rounded flex shadow">
           {/* Users List - Left Side */}
           <div className="w-1/3 border-r border-gray-200 overflow-y-auto">
-            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+            <div className="p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
               <h2 className="text-xl font-bold">전체 사용자 목록</h2>
               <p className="text-sm mt-1">총 {users.length}명의 사용자</p>
             </div>
@@ -155,73 +159,47 @@ function OwnerMessageView({ user }: { user: { id: string; username: string } }) 
           <div className="flex-1 flex flex-col">
             {selectedUser ? (
               <>
-                <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={selectedUser.profilePic}
-                      alt={selectedUser.username}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-white"
-                    />
-                    <div>
-                      <h3 className="text-lg font-bold">
-                        {selectedUser.username}
-                      </h3>
-                      <p className="text-sm">
-                        {messages.length}개의 메시지
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                <div className="flex-1 overflow-y-auto pt-2">
                   {messages.length === 0 ? (
-                    <div className="text-center text-gray-500 mt-8">
-                      메시지가 없습니다.
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      <p>메시지가 없습니다.</p>
                     </div>
                   ) : (
                     messages.map((msg) => {
-                      const isSentBySelectedUser =
-                        msg.author.id === selectedUser.id;
+                      const isMe = msg.author.id === user.id;
+                      const formattedDate = new Date(
+                        msg.created_at
+                      ).toLocaleString();
+
                       return (
                         <div
                           key={msg.id}
-                          className={`flex ${
-                            isSentBySelectedUser
-                              ? "justify-start"
-                              : "justify-end"
+                          className={`px-5 pb-6 flex ${
+                            isMe ? "flex-row-reverse" : "flex-row"
                           }`}
                         >
                           <div
-                            className={`max-w-[70%] rounded-lg p-3 ${
-                              isSentBySelectedUser
-                                ? "bg-gray-200 text-gray-900"
-                                : "bg-blue-500 text-white"
+                            className={`flex h-fit w-fit rounded-2xl py-1 pl-2 pr-5 max-w-[720px] bg-gradient-to-r shadow-lg items-center ${
+                              isMe
+                                ? "from-indigo-200 to-blue-200"
+                                : "from-zinc-200 to-stone-200"
                             }`}
                           >
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="flex flex-col justify-center items-center">
                               <img
                                 src={msg.author.profile_pic}
                                 alt={msg.author.username}
-                                className="w-6 h-6 rounded-full object-cover"
+                                className="w-12 h-12 rounded-full bg-white"
                               />
-                              <span className="text-xs font-semibold">
+                              <span className="text-xs mt-1">
                                 {msg.author.username}
                               </span>
-                              {!isSentBySelectedUser && (
-                                <span className="text-xs opacity-75">
-                                  → {msg.recipient.username}
-                                </span>
-                              )}
                             </div>
-                            <p className="break-words">{msg.message}</p>
-                            <div
-                              className={`text-xs mt-1 ${
-                                isSentBySelectedUser
-                                  ? "text-gray-600"
-                                  : "text-blue-100"
-                              }`}
-                            >
-                              {formatDate(msg.created_at)}
+                            <div className="ml-6 whitespace-normal break-anywhere text-shadow-sm">
+                              <p className="text-gray-800">{msg.message}</p>
+                              <span className="text-xs text-gray-500 mt-1 block">
+                                {formattedDate}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -229,6 +207,11 @@ function OwnerMessageView({ user }: { user: { id: string; username: string } }) 
                     })
                   )}
                 </div>
+                <MessageForm
+                  currentUserId={user.id}
+                  recipientId={selectedUser.id}
+                  onMessageSent={handleMessageSent}
+                />
               </>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
