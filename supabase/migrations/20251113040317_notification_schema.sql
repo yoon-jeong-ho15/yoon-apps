@@ -81,6 +81,8 @@ CREATE OR REPLACE FUNCTION create_notification(
 )
 RETURNS UUID
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
 AS $$
 DECLARE
   v_notification_id UUID;
@@ -149,6 +151,8 @@ $$;
 CREATE OR REPLACE FUNCTION create_message_notification()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
 AS $$
 DECLARE
   v_author_username VARCHAR(255);
