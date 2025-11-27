@@ -55,8 +55,8 @@ export default function Navigation() {
   return (
     <nav className="flex h-12 mt-3 mx-6 justify-between">
       <div className="flex w-6/12 items-center">
-        <Link to="/" className="text-xl font-bold text-blue-600">
-          Hello Friends
+        <Link to="/" className="text-xl font-bold text-gray-600">
+          chat
         </Link>
       </div>
       <div
