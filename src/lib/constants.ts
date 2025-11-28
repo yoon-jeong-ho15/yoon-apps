@@ -15,16 +15,6 @@ export const calculateMinutesToMs = (minutes: number) => minutes * MINUTES_TO_MS
 export const MESSAGE_MAX_LENGTH = 1000;
 export const MESSAGE_MIN_LENGTH = 1;
 
-// Friend group types
-export const FRIEND_GROUP = {
-  ALL: "0", // Public/all users group
-  DEFAULT: "0",
-} as const;
-
-// User defaults
-export const DEFAULT_USER_FROM = "0";
-export const DEFAULT_FRIEND_GROUP = "0";
-
 // Profile image sizes
 export const PROFILE_IMAGE_SIZE = {
   SMALL: "w-8 h-8",

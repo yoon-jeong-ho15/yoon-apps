@@ -50,9 +50,9 @@ export function transformUserRow(row: UserRow): User {
   return {
     id: row.id,
     username: row.username,
-    from: parseInt(row.from, 10) || 0,
     profilePic: row.profile_pic,
-    friendGroup: row.friend_group,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
   };
 }
 

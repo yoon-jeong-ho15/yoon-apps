@@ -1,18 +1,17 @@
 export type AuthUser = {
   id: string;
   username: string;
-  password: string;
-  from: string;
   profile_pic: string;
-  friend_group: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type User = {
   id: string;
   username: string;
-  from: number;
   profilePic: string;
-  friendGroup: string;
+  createdAt : string;
+  updatedAt : string;
 };
 
 // Database view response type for v_message
@@ -33,9 +32,9 @@ export type MessageViewRow = {
 export type UserRow = {
   id: string;
   username: string;
-  from: string;
   profile_pic: string;
-  friend_group: string;
+  created_at: string;
+  updated_at: string;
 };
 
 // Simple Message type for new message system
