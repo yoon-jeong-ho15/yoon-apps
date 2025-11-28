@@ -1,11 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import { motion } from "motion/react";
 import {
-  UserCircleIcon,
   ChatBubbleLeftRightIcon,
   BellIcon,
-  ChartBarIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
@@ -14,12 +12,10 @@ import { NOTIFICATION_POLLING_INTERVAL } from "../../lib/constants";
 import { isAdmin } from "../../lib/data/message";
 
 const regularUserTabs = [
-  { title: "프로필", href: "/profile", icon: UserCircleIcon },
   { title: "메시지", href: "/message", icon: ChatBubbleLeftRightIcon },
 ];
 
 const adminTabs = [
-  { title: "프로필", href: "/profile", icon: UserCircleIcon },
   { title: "메시지", href: "/admin/message", icon: ChatBubbleLeftRightIcon },
   { title: "대시보드", href: "/admin/dashboard", icon: UsersIcon },
 ];

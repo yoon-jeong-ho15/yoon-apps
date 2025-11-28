@@ -6,7 +6,7 @@ interface UserInfoProps {
 
 export default function UserInfo({ user }: UserInfoProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
+    <div className="rounded-lg p-6 space-y-4 grow">
       <div className="border-b pb-4">
         <h2 className="text-2xl font-bold text-gray-800">User Information</h2>
       </div>
@@ -14,8 +14,7 @@ export default function UserInfo({ user }: UserInfoProps) {
       <div className="space-y-3">
         <InfoRow label="Username" value={user.username} />
         <InfoRow label="User ID" value={user.id} />
-        <InfoRow label="From" value={user.from.toString()} />
-        <InfoRow label="Friend Group" value={user.friendGroup} />
+        <InfoRow label="Joined" value={user.createdAt} />
       </div>
     </div>
   );

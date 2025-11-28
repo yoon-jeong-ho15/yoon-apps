@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthProvider";
+import { useAuth } from "./contexts/useAuth";
 import LoginPage from "./pages/Login";
-import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
 import NotificationsPage from "./pages/Notifications";
 import AdminMessagePage from "./pages/AdminMessage";
@@ -30,7 +30,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   return (
-    <div className="flex flex-col w-full min-h-screen bg-gray-50">
+    <div className="flex flex-col w-full h-screen bg-gray-50">
       <Navigation />
       <div className="flex flex-col flex-grow">
         <Routes>
@@ -40,14 +40,6 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
               </ProtectedRoute>
             }
           />
@@ -84,7 +76,6 @@ function AppRoutes() {
               </AdminRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/profile" replace />} />
         </Routes>
       </div>
     </div>
