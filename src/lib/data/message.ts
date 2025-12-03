@@ -1,26 +1,8 @@
-import type { Message, MessageViewRow } from "../types";
+import type { Message, MessageViewRow } from "../../types/message";
 import { supabase } from "../supabase";
 import { transformMessageViewRows } from "../transformers";
 import { ERROR_MESSAGES } from "../constants";
-
-/**
- * Get the admin user ID from environment variable
- */
-export function getAdminId(): string {
-  const adminId = import.meta.env.VITE_ADMIN_USER_ID;
-  if (!adminId) {
-    console.error(ERROR_MESSAGES.ENV.ADMIN_ID_NOT_SET);
-    return "";
-  }
-  return adminId;
-}
-
-/**
- * Check if a user is the admin
- */
-export function isAdmin(userId: string): boolean {
-  return userId === getAdminId();
-}
+import { getAdminId, isAdmin } from "../../utils/user";
 
 /**
  * Fetch all messages with user information (for admin)

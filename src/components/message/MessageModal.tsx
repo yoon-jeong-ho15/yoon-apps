@@ -4,7 +4,7 @@ import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 import Modal from "../modal/Modal";
 import { useModalStore } from "../../stores/modalStore";
-import { isAdmin } from "../../lib/data/message";
+import { isAdmin } from "../../utils/user";
 import UserList from "./UserList";
 import { useAdminMessage } from "../../hooks/message/useAdminMessage";
 import EmptyMessageList from "./EmptyList";

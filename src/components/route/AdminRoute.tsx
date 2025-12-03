@@ -1,8 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/useAuth";
-import { isAdmin } from "../../lib/data/message";
+import { isAdmin } from "../../utils/user";
 
-export default function AdminRoute({ children }: { children: React.ReactNode }) {
+export default function AdminRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {

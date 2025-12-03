@@ -10,7 +10,7 @@ export default function Modal({
   title,
   children,
   className = "",
-}: ModalProps & { title: string; children: ReactNode; className: string }) {
+}: ModalProps & { title: string; children: ReactNode; className?: string }) {
   if (!isOpen) return null;
 
   return (

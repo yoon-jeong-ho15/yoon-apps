@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/useAuth";
-import { isAdmin } from "../lib/data/message";
 import { fetchUsersWithAuthLogs } from "../lib/data/userActivity";
 import type { User } from "../types/user";
 import { Navigate } from "react-router-dom";
 import UserDetailModal from "../components/admin/UserDetailModal";
+import { isAdmin } from "../utils/user";
 
 type AuditLogEntry = {
   id: string;

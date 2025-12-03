@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthProvider";
 import LoginPage from "./pages/Login";
 import NotificationsPage from "./pages/Notifications";
-import AdminMessagePage from "./pages/AdminMessage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/route/AdminRoute";
 import HomePage from "./pages/Home";
@@ -44,15 +43,7 @@ function App() {
             />
             {/* Admin-only routes */}
             <Route
-              path="/admin/message"
-              element={
-                <AdminRoute>
-                  <AdminMessagePage />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/admin/dashboard"
+              path="/admin"
               element={
                 <AdminRoute>
                   <AdminDashboard />
