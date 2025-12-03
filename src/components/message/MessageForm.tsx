@@ -10,14 +10,15 @@ interface MessageFormProps {
   handleKeyDown: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
-export default function MessageForm({
-  message,
-  setMessage,
-  isSubmitting,
-  textareaRef,
-  handleSubmit,
-  handleKeyDown,
-}: MessageFormProps) {
+export default function MessageForm(props: MessageFormProps) {
+  const {
+    message,
+    setMessage,
+    isSubmitting,
+    textareaRef,
+    handleSubmit,
+    handleKeyDown,
+  } = props;
   return (
     <form
       onSubmit={handleSubmit}

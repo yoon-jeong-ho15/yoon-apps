@@ -1,10 +1,4 @@
-import { useAuth } from "../../contexts/useAuth";
-import {
-  ChatBubbleLeftRightIcon,
-  UsersIcon,
-  FireIcon,
-} from "@heroicons/react/24/outline";
-import { isAdmin } from "../../lib/data/message";
+import { ChatBubbleLeftRightIcon, FireIcon } from "@heroicons/react/24/outline";
 import { useModalStore, type ModalType } from "../../stores/modalStore";
 import GradientContainer from "../common/GradientContainer";
 import { useHeaderStore } from "../../stores/headerStore";
@@ -17,7 +11,7 @@ type TabItem = {
   headerText?: string;
 };
 
-const regularUserTabs: TabItem[] = [
+const tabs: TabItem[] = [
   {
     title: "메시지",
     modalKey: "message",
@@ -32,20 +26,12 @@ const regularUserTabs: TabItem[] = [
   },
 ];
 
-const adminTabs: TabItem[] = [
-  { title: "메시지", href: "/admin/message", icon: ChatBubbleLeftRightIcon },
-  { title: "대시보드", href: "/admin/dashboard", icon: UsersIcon },
-];
-
 export default function Navigation() {
-  const { user } = useAuth();
   const { setText } = useHeaderStore();
 
   const openModal = useModalStore((state) => state.openModal);
 
   // Determine which tabs to show based on user role
-  const tabs = user && isAdmin(user.id) ? adminTabs : regularUserTabs;
-
   return (
     <GradientContainer
       outerClassName="p-[3px] rounded-full w-fit"

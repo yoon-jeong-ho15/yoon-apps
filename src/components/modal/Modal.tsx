@@ -1,14 +1,6 @@
 import type { ReactNode } from "react";
 import ModalTop from "./ModalTop";
-
-interface ModalProps {
-  isOpen: boolean;
-  isMinimized: boolean;
-  onClose: () => void;
-  onMinimize: () => void;
-  title: string;
-  children: ReactNode;
-}
+import type { ModalProps } from "../../types/modal";
 
 export default function Modal({
   isOpen,
@@ -17,7 +9,8 @@ export default function Modal({
   onMinimize,
   title,
   children,
-}: ModalProps) {
+  className = "",
+}: ModalProps & { title: string; children: ReactNode; className: string }) {
   if (!isOpen) return null;
 
   return (
@@ -25,7 +18,8 @@ export default function Modal({
       className={`
         bg-white rounded-lg overflow-hidden 
         w-fit flex flex-col 
-        border border-gray-600 shadow-lg`}
+        border border-gray-600 shadow-lg
+        `}
       onClick={(e) => e.stopPropagation()}
     >
       <ModalTop
@@ -35,7 +29,7 @@ export default function Modal({
         onMinimize={onMinimize}
       />
 
-      <div className={`${isMinimized ? "h-0 p-0" : "h-auto p-2"}`}>
+      <div className={`${className} ${isMinimized ? "h-0 p-0" : "h-auto p-2"}`}>
         {children}
       </div>
     </div>

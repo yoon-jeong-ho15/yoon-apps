@@ -7,7 +7,7 @@ import { ERROR_MESSAGES } from "../lib/constants";
 import {
   generateUsernameFromOAuthUser,
   isInvalidCredentialsError,
-} from "../lib/utils/auth";
+} from "../utils/auth";
 import { transformUserRow } from "../lib/transformers";
 import { AuthContext } from "./AuthContext";
 

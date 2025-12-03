@@ -12,7 +12,6 @@ type ModalStore = {
   openModal: (modalType: ModalType) => void;
   closeModal: (modalType: ModalType) => void;
   toggleMinimize: (modalType: ModalType) => void;
-  setMinimized: (modalType: ModalType, isMinimized: boolean) => void;
 };
 
 export const useModalStore = create<ModalStore>((set) => ({
@@ -43,13 +42,6 @@ export const useModalStore = create<ModalStore>((set) => ({
           ...state.modals[modalType],
           isMinimized: !state.modals[modalType].isMinimized,
         },
-      },
-    })),
-  setMinimized: (modalType, isMinimized) =>
-    set((state) => ({
-      modals: {
-        ...state.modals,
-        [modalType]: { ...state.modals[modalType], isMinimized },
       },
     })),
 }));

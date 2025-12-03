@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import MessageForm from "../components/message/MessageForm";
-import MessageItem from "../components/message/MessageItem";
-import UserListItem from "../components/profile/UserListItem";
+
 import { isAdmin, fetchMessagesByUserId } from "../lib/data/message";
 import { fetchUsersByGroup } from "../lib/data/user";
 import type { User } from "../types/user";
@@ -78,7 +77,7 @@ export default function AdminMessagePage() {
       </div>
     );
   }
-
+  return <div>admin message page</div>;
   return (
     <div className="flex mt-5 mx-8 flex-grow space-x-4">
       {/* Users List - Left Side */}
