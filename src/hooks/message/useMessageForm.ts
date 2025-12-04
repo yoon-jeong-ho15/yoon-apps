@@ -7,7 +7,7 @@ import {
 } from "react";
 import { insertMessage } from "../../lib/data/message";
 import { ERROR_MESSAGES } from "../../lib/constants";
-import { validateMessage } from "../../utils/message/validate";
+import { validateMessage } from "../../utils/message";
 
 interface UseMessageFormOptions {
   currentUserId: string;
