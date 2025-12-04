@@ -4,7 +4,11 @@
  */
 
 import { supabase } from "../supabase";
-import type { Notification, NotificationRow, NotificationType } from "../types";
+import type {
+  Notification,
+  NotificationRow,
+  NotificationType,
+} from "../../types/notification";
 import { transformNotificationRows } from "../transformers";
 import { ERROR_MESSAGES } from "../constants";
 
@@ -189,7 +193,9 @@ export async function deleteNotification(
  * @param userId - The user ID to delete read notifications for
  * @returns Promise<boolean> - True if successful, false otherwise
  */
-export async function deleteReadNotifications(userId: string): Promise<boolean> {
+export async function deleteReadNotifications(
+  userId: string
+): Promise<boolean> {
   const { error } = await supabase
     .from("notification")
     .delete()

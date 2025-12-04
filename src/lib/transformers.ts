@@ -3,15 +3,14 @@
  * Following Toss frontend fundamentals - extract repeated logic
  */
 
+import type { User } from "../types/user";
+import type { MessageViewRow, Message } from "../types/message";
 import type {
-  Message,
-  MessageViewRow,
   Notification,
   NotificationRow,
   NotificationType,
-  User,
-  UserRow,
-} from "./types";
+} from "../types/notification";
+import type { UserRow } from "../types/user";
 
 /**
  * Transform database message view row to Message type
