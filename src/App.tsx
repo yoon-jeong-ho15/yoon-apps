@@ -1,12 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthProvider";
 import LoginPage from "./pages/Login";
-import NotificationsPage from "./pages/Notifications";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/route/AdminRoute";
 import HomePage from "./pages/Home";
-import Header from "./components/Header";
-import ProfilePage from "./pages/Profile";
+import Header from "./components/header/Header";
 import ProtectedRoute from "./components/route/ProtectedRoute";
 
 function App() {
@@ -22,22 +20,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/notifications"
-              element={
-                <ProtectedRoute>
-                  <NotificationsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
                 </ProtectedRoute>
               }
             />
